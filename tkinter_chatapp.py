@@ -11,11 +11,15 @@ import re
 
 BG_GRAY = '#ff7ca6'
 
-BG_SIDE = "#d9c6d0"
+BG_STRIP = "#FFE6EE"
 
 BG_COLOR = '#f7afc6'
 
-TEXT_COLOR = '#240a12'
+TEXT_COLOR = '#100307'
+
+CHARCOAL = "#2C3E50"
+
+WHITE = "#fffbfc"
 
 FONT = ('Cascadia Mono', 15)
 FONT_BOLD = ('Cascadia Mono SemiBold', 15)
@@ -31,34 +35,39 @@ class ChatApp():
 
     def _setup_main_window(self):
         self.window.title("LyraBot")
-        self.window.resizable(width=True, height=True)
+        self.window.resizable(width=False, height=False)
         self.window.configure(width=1000, height=550, bg=BG_COLOR)
         
         # head label
-        head_label = Label(self.window, bg=BG_COLOR, fg=TEXT_COLOR, text="Welcome", font=FONT_BOLD, pady=10)
+        head_label = Label(self.window, bg=BG_COLOR, fg=TEXT_COLOR, text="Welcome to the Chat!", font=FONT_BOLD, pady=10)
         head_label.place(relwidth=1)
 
         # tiny divider
         line = Label(self.window, width=450, bg=BG_GRAY)
-        line.place(relwidth=1, rely=0.07, relheight=0.012)
-    
+        line.place(relwidth=1, rely=0.07, relheight=0.012)        
+
         #Text widget
         self.text_widget = Text(self.window, width=20, height=2, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, padx=5, pady=8)
-        self.text_widget.place(relheight=0.745, relwidth=1, rely=0.08)
+        self.text_widget.place(relheight=0.745, relwidth=1, rely=0.175, relx=-0.0001)
         self.text_widget.configure(cursor='arrow', state=NORMAL)
-        
-        # Right label
-        right_label = Label(self.window, bg=BG_SIDE, width=20, height=80)
-        right_label.place(relwidth=1, relx=0.85,)
-        
-        #Bottom label
+
+        rate_label = Label(self.window, bg=BG_STRIP, fg=TEXT_COLOR, text="Type RATE [Number] to rate your day from 1 to 5! Ex: RATE 3", font=FONT_BOLD, pady=5)
+        rate_label.place(x=500, rely=.12, anchor="center", relwidth=1,)
+
+        search_label = Label(self.window, bg=BG_GRAY, fg=WHITE, text="Type SEARCH: [Query] to look something up!", font=('Cascadia Mono', 10), pady=5)
+        search_label.place(x=500, rely=.17, anchor="center", relwidth=1, relheight=0.03,)
+
+        # spacer = Label(self.window, text="New Line Text")
+        # spacer.pack(padx=10, pady=10)
+
+        # Bottom label
         bottom_label = Label(self.window, bg=BG_GRAY, height=80)
         bottom_label.place(relwidth=1, rely=0.825)
 
         ## Step 7 (We need to create a new function to complete this step)
         # message entry box
         self.msg_entry = Entry(bottom_label, bg="#2C3E50", fg="#fffbfc", font=FONT)
-        self.msg_entry.place(relwidth=0.74, relheight=0.06, rely=0.008, relx=0.011)
+        self.msg_entry.place(relwidth=0.74, relheight=0.06, rely=0.008, relx=0.011,)
         self.msg_entry.focus()
         self.msg_entry.bind("<Return>", self._on_enter_pressed)
 
@@ -80,6 +89,7 @@ class ChatApp():
         if not msg:
             return
         
+
         self.msg_entry.delete(0, END) # clear the entry box
         msg1 = f"{sender}: {msg}\n\n"
         self.text_widget.configure(state=NORMAL)
@@ -92,7 +102,7 @@ class ChatApp():
         self.text_widget.see(END)
 
 def conversations(request):
-    greetings = ["Hi!", "Hi", "Hi.", "Hi","Hello!", 
+    greetings = ["Hi!", "Hi", "Hi.", "Hi","Hello!",
                 "Hello there!", "Hello there", "Hello", "Hello.", "Hello there.", 
                 "Howdy", "Howdy!,", "Howdy.", 
                 "Hey", "Hey!", "Hey.", 
@@ -142,7 +152,7 @@ def conversations(request):
     
     day_asks = ["Hru", "Hru?", "How was your day", "How was your day?", 
                 "How are you?", "How are you", 
-                "How are you doing?", "How are you doing", 
+                "How are you doing?", "How are you doing", "How you doin?", "How you doin", "How you doin today?", "How you doin today", "How you doin."
                 "How are you doing today?", "How are you doing today", 
                 "How you doing", "How you doing?", "How you doing today?", "How you doing today", 
                 "How's your day?", "How's your day", "How's your day going?", "How's your day going", 
@@ -150,6 +160,8 @@ def conversations(request):
                 "How's your day been?", "How's your day been going today?", "How's your day been going today", 
                 "How's your day been today?", "How's your day been going today", "How's your day been",
                 "How's your day been today", "How's your day been going?",
+                "How is your day?", "How is your day", "How is your day going?", "How is your day going", "How is your day today?", "How is your day today", "How is your day been?", "How is your day been", "How is your day been going?", "How is your day been going", "How is your day been going today?", "How is your day been going today", "How is your day been going today?", "How is your day been going today",
+                "How has your day been?", "How has your day been", "How has your day been going?", "How has your day been going", "How has your day been going today", "How has your day been going today", "How has your day been going today?", "How has your day been going today",
                 "How's your day been going today","How's your day been going", 
                 "What's up?", "What's up", "What's up?", "What's up", "Whats up?", "Whats up", "Whats up?", "Whats up",
                 "Que pasa?", "Que pasa", "Que pasa?", "Que pasa", "Que tal?", "Que tal", "Que tal?", "Que tal", "Que onda?", "Que onda", "Que onda?", "Que onda",
@@ -200,86 +212,65 @@ def conversations(request):
                 pick = random.randint(0, len(day_responses) - 1)
                 return day_responses[pick]
         # return ChatApp.rate_day(request)
-    
-    # rate_day(ChatApp, request)
-    else: 
-        search(request)
-    
-# def rate_day(request):
-#     mood_dict = {
-#         1: "Aw, I'm sorry about that. :(",
-#         2: "Hm, your day could have been better. ",
-#         3: "Your day was okay! Could have been worse.",
-#         4: "Yay, you had a good day!",
-#         5: "Wow, your day was awesome! :D"}
-    
-#     rating = simpledialog.askinteger("Rate Your Day", "On a scale of 1 to 5, how was your day?")
-#     if rating is not None and 1 <= rating <= 5:
-#         return mood_dict[rating]
-#     else:
-#         return "Invalid rating. Please provide a rating from 1 to 5."
-    
-
-
-#     rate = int(request.get("On a scale of 1 to 5, are you doing today?"))
-
-#     if 1 <= rate <= 5:
-#         mood_dict = {
-#             1: "Aw, I'm sorry about that. :(",
-#             2: "Hm, your day could have been better. ",
-#             3: "Your day was okay! Could have been worse.",
-#             4: "Yay, you had a good day!",
-#             5: "Wow, your day was awesome! :D"
-#         }
-#         return mood_dict[rate]
-#     else:
-#         while (type(rate) != int) or (rate < 1) or (rate > 5):
-#             print("Please enter an integer from 1 to 5.")
-#             rate = int(input("On a scale of 1 to 5, how are you doing today? \n"))
             
-    
-def search(request):
-    language_code = 'en'
-    search_query = request
-    number_of_results = 1
-    headers = {
-    # 'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-    'User-Agent': 'YOUR_APP_NAME (YOUR_EMAIL_OR_CONTACT_PAGE)'
-    }
+    elif request_list[0].upper() == "RATE":
+        if 1 <= int(request_list[1]) <= 5:
+            mood_dict = {
+            1: "Aw, I'm sorry about that. :(",
+            2: "Hm, your day could have been better. ",
+            3: f"Seems that your day was okay! Could have been worse. (─‿‿─)",
+            4: "Yay, you had a good day!",
+            5: "Wow, your day was awesome! :D"}
 
-    base_url = 'https://api.wikimedia.org/core/v1/wikipedia/'
-    endpoint = '/search/page'
-    url = base_url + language_code + endpoint
-    parameters = {'q': search_query, 'limit': number_of_results}
-    response = requests.get(url, headers=headers, params=parameters)
+            return mood_dict[int(request_list[1])]
+        else:
+            return "Invalid rating. Please provide a rating from 1 to 5."
+        
+    elif request_list[0].upper() == "SEARCH:": 
+        del request_list[0]
+        new_request = " ".join(request_list)
 
-    response = json.loads(response.text)
-    output = []
+        language_code = 'en'
+        search_query = new_request
+        number_of_results = 1
+        headers = {
+        # 'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
+        'User-Agent': 'YOUR_APP_NAME (YOUR_EMAIL_OR_CONTACT_PAGE)'
+        }
 
-    for page in response['pages']:
-        display_title = page['title']
-        article_url = 'https://' + language_code + '.wikipedia.org/wiki/' + page['key']
-        try:
-            article_description = page['description']
-        except:
-            article_description = 'a Wikipedia article'
-        try:
-            thumbnail_url = 'https:' + page['thumbnail']['url']
-        except:
-            thumbnail_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/200px-Wikipedia-logo-v2.svg.png'
-        excerpt_text = page['excerpt']
+        base_url = 'https://api.wikimedia.org/core/v1/wikipedia/'
+        endpoint = '/search/page'
+        url = base_url + language_code + endpoint
+        parameters = {'q': search_query, 'limit': number_of_results}
+        response = requests.get(url, headers=headers, params=parameters)
 
-    # removes tags 
-        excerpt_text_no_tags = re.sub('<span.*?>|&.*;|</span>', '', excerpt_text)
-        description_text = page['description']
-        return f"""\nExcerpt: {excerpt_text_no_tags}
-        \nDescription: {description_text}
-        \nArticle URL: {article_url}"""
-        # output.append({'excerpt': excerpt_text_no_tags, 'description': description_text, 'article_url': article_url})
+        response = json.loads(response.text)
+        output = []
 
-    # else: 
-    #     output.append({'excerpt': '', 'description': '', 'article_url': ''})
-    #     return output
+        for page in response['pages']:
+            display_title = page['title']
+            article_url = 'https://' + language_code + '.wikipedia.org/wiki/' + page['key']
+            try:
+                article_description = page['description']
+            except:
+                article_description = 'a Wikipedia article'
+            try:
+                thumbnail_url = 'https:' + page['thumbnail']['url']
+            except:
+                thumbnail_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/200px-Wikipedia-logo-v2.svg.png'
+            excerpt_text = page['excerpt']
+
+        # removes tags 
+            excerpt_text_no_tags = re.sub('<span.*?>|&.*;|</span>', '', excerpt_text)
+            description_text = page['description']
+            return f"""\nExcerpt: {excerpt_text_no_tags}
+            \nDescription: {description_text}
+            \nArticle URL: {article_url}"""
+            # output.append({'excerpt': excerpt_text_no_tags, 'description': description_text, 'article_url': article_url})
+
+        # else: 
+        #     output.append({'excerpt': '', 'description': '', 'article_url': ''})
+        #     return output
 
 app = ChatApp()
 app.run()
