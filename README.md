@@ -16,3 +16,9 @@
 <br>
 <h2>Coming Soon</h2>
 <p>🖤 Dark Mode Toggle</p>
+
+<br>
+<h2>Demo</h2>
+
+![lyra_demo](https://github.com/eden-amari/LyraChatBot/assets/121753525/e7c0133b-b19c-461f-941a-6364d5cebdf3)
+
